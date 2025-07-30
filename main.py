@@ -249,6 +249,10 @@ async def scrape_and_update_db():
     """Scrapes all base URLs and updates the database with the findings."""
     logger.info("Starting to scrape and update database...")
     
+    # Clear previously scraped movies to ensure the database is fresh.
+    # This will not affect manually added movies.
+    await db.clear_scraped_movies()
+    
     scraped_items = []
     async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT)) as session:
         tasks = [fetch_and_parse_url(session, base_url, scraped_items) for base_url in BASE_URLS]
@@ -258,10 +262,8 @@ async def scrape_and_update_db():
         unique_scraped_items = {item['original_name']: item for item in scraped_items}.values()
         unique_scraped_items_list = list(unique_scraped_items)
         
-        # The following line was removed to prevent deleting manually added movies.
-        # await db.clear_movies() 
         await db.add_movie_batch(unique_scraped_items_list)
-        logger.info(f"Database update complete. Total items: {len(unique_scraped_items_list)}")
+        logger.info(f"Database update complete. Total items from this scrape: {len(unique_scraped_items_list)}")
     else:
         logger.info("No items were scraped. Database not updated.")
 
