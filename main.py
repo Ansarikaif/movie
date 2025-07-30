@@ -31,7 +31,7 @@ from telegram.ext import (
     CallbackQueryHandler,
     ContextTypes
 )
-from telegram.error import BadRequest
+from telegram.error import BadRequest, Forbidden
 
 # Windows-specific fixes
 if sys.platform == "win32":
@@ -69,46 +69,98 @@ if ADMIN_IDS_STR:
 
 # Category configuration
 CATEGORY_KEYWORDS = [
-    "animation",
-    "tvseries",
     "Bollywood",
-    "hindidub",
-    "hollywood",
+    "Chinese",
+    "Hollywood",
+    "Hindi dubbed",
+    "Tamil",
+    "animation",
     "indianbangla",
+    "tvseries",
     "Korean",
-    "webseries",
-    "tamil",
-    "Animation",
-    "Hindi_Duaded",
-    "IMDB_TOP_250",
-    "Malayalam",
-    "chinese movie",
+    "S",
 ]
 
+# FIX: Added missing commas to prevent URL concatenation
 BASE_URLS = [
-    "http://103.237.37.181/server1/Movies/Animation/2025/",
-    "http://103.237.37.181/server1/Movies/Animation/2024/",
-    "http://103.237.37.181/server1/Movies/Animation/2023_To_Previous/",
-    "http://103.237.37.181/server1/Movies/Bollywood/2025/",
-    "http://103.237.37.181/server1/Movies/Bollywood/2024/",
-    "http://103.237.37.181/server1/Movies/Bollywood/2023_To_Previous/",
-    "http://103.237.37.181/server1/Movies/Hindi_Duaded/2025/",
-    "http://103.237.37.181/server1/Movies/Hindi_Duaded/2024/",
-    "http://103.237.37.181/server1/Movies/Hindi_Duaded/2023_To_Previous/",
-    "http://103.237.37.181/server1/Movies/Hollywood/2025/",
-    "http://103.237.37.181/server1/Movies/Hollywood/2024/",
-    "http://103.237.37.181/server1/Movies/Hollywood/2023_To_Previous/",
-    "http://103.237.37.181/server1/Movies/IMDB_TOP_250/",
-    "http://103.237.37.181/server1/Movies/Tamil/2025/",
-    "http://103.237.37.181/server1/Movies/Tamil/2024/",
-    "http://103.237.37.181/server1/Movies/Tamil/2023_To_Previous/",
-    "http://103.237.37.181/server1/Movies/chinese%20movie/",
-    "http://103.237.37.181/server1/Movies/Malayalam/2025/",
-    "http://103.237.37.181/server1/Movies/Malayalam/2024/",
-    "http://103.237.37.181/server1/Movies/Malayalam/2023_To_Previous/",
+    "http://103.145.232.246/Data/movies/Bollywood/2000/",
+    "http://103.145.232.246/Data/movies/Bollywood/2007/",
+    "http://103.145.232.246/Data/movies/Bollywood/2008/",
+    "http://103.145.232.246/Data/movies/Bollywood/2011/",
+    "http://103.145.232.246/Data/movies/Bollywood/2012/",
+    "http://103.145.232.246/Data/movies/Bollywood/2013/",
+    "http://103.145.232.246/Data/movies/Bollywood/2014/",
+    "http://103.145.232.246/Data/movies/Bollywood/2018/",
+    "http://103.145.232.246/Data/movies/Bollywood/2019/",
+    "http://103.145.232.246/Data/movies/Bollywood/2020/",
+    "http://103.145.232.246/Data/movies/Bollywood/2021/",
+    "http://103.145.232.246/Data/movies/Bollywood/2022/",
+    "http://103.145.232.246/Data/movies/Bollywood/2023/",
+    "http://103.145.232.246/Data/movies/Bollywood/2024/",
+    "http://103.145.232.246/Data/movies/Bollywood/2025/",
+    "http://103.145.232.246/Data/movies/Bollywood/Bollywood%20collection/",
+    "http://103.145.232.246/Data/movies/Bollywood/random/",
+    "http://103.145.232.246/Data/movies/Chinese/2012/",
+    "http://103.145.232.246/Data/movies/Chinese/2020/",
+    "http://103.145.232.246/Data/movies/Chinese/2024/",
+    "http://103.145.232.246/Data/movies/Hindi%20dubbed/",
+    "http://103.145.232.246/Data/movies/Hollywood/2000/",
+    "http://103.145.232.246/Data/movies/Hollywood/2008/",
+    "http://103.145.232.246/Data/movies/Hollywood/2009/",
+    "http://103.145.232.246/Data/movies/Hollywood/2010/",
+    "http://103.145.232.246/Data/movies/Hollywood/2011/",
+    "http://103.145.232.246/Data/movies/Hollywood/2012/",
+    "http://103.145.232.246/Data/movies/Hollywood/2013/",
+    "http://103.145.232.246/Data/movies/Hollywood/2014/",
+    "http://103.145.232.246/Data/movies/Hollywood/2015/",
+    "http://103.145.232.246/Data/movies/Hollywood/2016/",
+    "http://103.145.232.246/Data/movies/Hollywood/2017/",
+    "http://103.145.232.246/Data/movies/Hollywood/2018/",
+    "http://103.145.232.246/Data/movies/Hollywood/2019/",
+    "http://103.145.232.246/Data/movies/Hollywood/2020/",
+    "http://103.145.232.246/Data/movies/Hollywood/2021/",
+    "http://103.145.232.246/Data/movies/Hollywood/2022/",
+    "http://103.145.232.246/Data/movies/Hollywood/2023/",
     "http://103.145.232.246/Data/movies/Hollywood/2024/",
     "http://103.145.232.246/Data/movies/Hollywood/2025/",
     "http://103.145.232.246/Data/movies/Hollywood/Hollywood%20collection/",
+    "http://103.145.232.246/Data/movies/Hollywood/best/",
+    "http://103.145.232.246/Data/movies/Hollywood/best1/",
+    "http://103.145.232.246/Data/movies/Hollywood/horror/",
+    "http://103.145.232.246/Data/movies/Hollywood/new%202009/",
+    "http://103.145.232.246/Data/movies/Hollywood/random/",
+    "http://103.145.232.246/Data/movies/Tamil/2020/",
+    "http://103.145.232.246/Data/movies/Tamil/2021/",
+    "http://103.145.232.246/Data/movies/Tamil/2022/",
+    "http://103.145.232.246/Data/movies/Tamil/2023/",
+    "http://103.145.232.246/Data/movies/Tamil/2024/",
+    "http://103.145.232.246/Data/movies/animation/2009/",
+    "http://103.145.232.246/Data/movies/animation/2011-2020/",
+    "http://103.145.232.246/Data/movies/animation/2023/",
+    "http://103.145.232.246/Data/movies/animation/2024/",
+    "http://103.145.232.246/Data/movies/animation/new/",
+    "http://103.145.232.246/Data/movies/indianbangla/2000-2021/",
+    "http://103.145.232.246/Data/movies/indianbangla/2019/",
+    "http://103.145.232.246/Data/movies/indianbangla/2020/",
+    "http://103.145.232.246/Data/movies/indianbangla/2022/",
+    "http://103.145.232.246/Data/movies/indianbangla/2023/",
+    "http://103.145.232.246/Data/movies/indianbangla/2024/",
+    "http://103.145.232.246/Data/movies/indianbangla/new/",
+    "http://103.145.232.246/Data/movies/indianbangla/random/",
+    "http://103.145.232.246/Data/movies/korean/",
+    "http://103.145.232.246/Data/movies/s/10-06-2024/",
+    "http://103.145.232.246/Data/movies/s/11-7-2024/",
+    "http://103.145.232.246/Data/movies/s/17-7-2025/",
+    "http://103.145.232.246/Data/movies/s/18-4-2025/",
+    "http://103.145.232.246/Data/movies/s/22-6-2024/",
+    "http://103.145.232.246/Data/movies/s/28-3-2025/",
+    "http://103.145.232.246/Data/movies/s/28-6-2024/",
+    "http://103.145.232.246/Data/movies/s/7-7-2024/",
+    "http://103.145.232.246/Data/tvseries/Bangla/",
+    "http://103.145.232.246/Data/tvseries/English/",
+    "http://103.145.232.246/Data/tvseries/Indian/",
+    "http://103.145.232.246/Data/tvseries/Squid%20Game/",
+    "http://103.145.232.246/Data/tvseries/new/",
 ]
 
 
@@ -128,8 +180,11 @@ item_selection_counts = {}
 
 # --- Helper Functions ---
 def get_category(url: str) -> str:
-    """Extracts category from URL based on keywords."""
-    url_lower = url.lower()
+    """Extracts category from URL based on keywords, handling URL encoding."""
+    # First, decode any URL-encoded characters (like %20 for space)
+    decoded_url = unquote(url)
+    url_lower = decoded_url.lower()
+    
     for keyword in CATEGORY_KEYWORDS:
         if keyword.lower() in url_lower:
             return keyword
@@ -382,6 +437,7 @@ async def get_movie_metadata(title: str) -> dict:
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         user = update.effective_user
+        await db.add_user(user.id)
         user_name = user.first_name
         welcome_message = f"🎬 Welcome {user_name} to Movie Finder Bot!\n\n"
         
@@ -408,6 +464,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 /addwebseries &lt;name&gt; | &lt;category&gt; | &lt;poster_url&gt; | &lt;plot&gt; | &lt;S1E1:url1;S1E2:url2&gt; - Add a web series.
   <i>Example:</i> <code>/addwebseries My Series | Webseries | http://poster.url/img.jpg | A great series | S1E1:http://link1.com</code>
 /viewrequests - View movie requests.
+/broadcast &lt;message&gt; - Send a message to all users.
 """
             full_message += admin_commands_message
 
@@ -441,6 +498,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 /addwebseries &lt;name&gt; | &lt;category&gt; | &lt;poster_url&gt; | &lt;plot&gt; | &lt;S1E1:url1;S1E2:url2&gt; - Add a web series.
   <i>Example:</i> <code>/addwebseries My Series | Webseries | http://poster.url/img.jpg | A great series | S1E1:http://link1.com</code>
 /viewrequests - View movie requests.
+/broadcast &lt;message&gt; - Send a message to all users.
 """
         
         await update.message.reply_text(help_text, parse_mode='HTML')
@@ -453,13 +511,30 @@ async def handle_message_search(update: Update, context: ContextTypes.DEFAULT_TY
         context.args = update.message.text.split()
         await handle_search(update, context)
 
+def get_relevancy_score(name, query):
+    """Calculates a relevancy score for a search result."""
+    norm_name = normalize_movie_name(name)
+    # Exact match = highest score
+    if norm_name == query:
+        return 100
+    # Query as whole word = high score
+    if f" {query} " in f" {norm_name} ":
+        return 90
+    # Query at the start = medium score
+    if norm_name.startswith(query):
+        return 80
+    # Lower score for general substring, penalize by length difference
+    return 50 - len(norm_name)
+
 async def handle_search(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
+        await db.add_user(update.effective_user.id)
         if not context.args:
             await update.message.reply_text("❌ Please specify a movie or web series name.", parse_mode='HTML')
             return
 
         query = ' '.join(context.args)
+        norm_query = normalize_movie_name(query)
         logger.info(f"User {update.effective_user.id} searching for: '{query}'")
         search_query_counts[query.lower()] = search_query_counts.get(query.lower(), 0) + 1
         
@@ -469,9 +544,12 @@ async def handle_search(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not matched_names:
             await processing_msg.edit_text(f"😞 No results for '<b>{query}</b>'. You can request it using /request.", parse_mode='HTML')
             return
+            
+        # Sort results by relevancy
+        sorted_matched_names = sorted(matched_names, key=lambda name: get_relevancy_score(name, norm_query), reverse=True)
 
         keyboard = []
-        for name in matched_names[:FILES_PER_PAGE]:
+        for name in sorted_matched_names[:FILES_PER_PAGE]:
             item_info = await db.get_movie_details(name)
             item_type = "movie"
             if not item_info:
@@ -495,11 +573,13 @@ async def handle_search(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_get(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
+        await db.add_user(update.effective_user.id)
         if not context.args:
             await update.message.reply_text("❌ Please specify a movie or web series name.", parse_mode='HTML')
             return
 
         query = ' '.join(context.args)
+        norm_query = normalize_movie_name(query)
         logger.info(f"User {update.effective_user.id} direct get: '{query}'")
         
         processing_msg = await update.message.reply_text(f"⏳ Direct search for '<b>{query}</b>'...", parse_mode='HTML')
@@ -509,7 +589,9 @@ async def handle_get(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await processing_msg.edit_text(f"😞 No matches for '<b>{query}</b>'.", parse_mode='HTML')
             return
 
-        best_match = matched_names[0]
+        # Sort results by relevancy and pick the best one
+        sorted_matched_names = sorted(matched_names, key=lambda name: get_relevancy_score(name, norm_query), reverse=True)
+        best_match = sorted_matched_names[0]
         
         item_info = await db.get_movie_details(best_match)
         item_type = "movie"
@@ -532,6 +614,7 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
     
     try:
+        await db.add_user(update.effective_user.id)
         data = query.data
         chat_id = query.message.chat_id
         message_id = query.message.message_id
@@ -648,7 +731,7 @@ async def send_item_details(context: CallbackContext, chat_id: int, item_name: s
                 files = await get_item_files(item_name)
 
             if not files:
-                await context.bot.send_message(chat_id, "🚫 No download links could be found for this movie.")
+                await context.bot.send_message(chat_id, f"🚫 No download links could be found for <b>{item_name}</b>. You can request it using <code>/request {item_name}</code>", parse_mode='HTML')
                 return
 
             caption = f"🎬 <b>{metadata.get('Title', item_name)}</b>\n"
@@ -686,7 +769,7 @@ async def send_item_details(context: CallbackContext, chat_id: int, item_name: s
             
             episodes = await db.get_episodes_for_series(series_info["id"])
             if not episodes:
-                await context.bot.send_message(chat_id, "🚫 No episodes found for this web series.")
+                await context.bot.send_message(chat_id, f"🚫 No episodes found for this web series. You can request it using <code>/request {item_name}</code>", parse_mode='HTML')
                 return
 
             caption = f"📺 <b>{series_info['name']}</b>\n"
@@ -943,6 +1026,7 @@ async def handle_add_webseries(update: Update, context: ContextTypes.DEFAULT_TYP
 
 async def handle_request(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
+        await db.add_user(update.effective_user.id)
         if not context.args:
             await update.message.reply_text("❌ Please specify the movie you want to request. Usage: /request <movie name>")
             return
@@ -978,6 +1062,7 @@ async def handle_view_requests(update: Update, context: ContextTypes.DEFAULT_TYP
 
 async def handle_browse(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
+        await db.add_user(update.effective_user.id)
         categories = sorted(list(set(CATEGORY_KEYWORDS)))
         keyboard = [[InlineKeyboardButton(category, callback_data=f"browse_category_{category}_0")] for category in categories]
         
@@ -987,6 +1072,46 @@ async def handle_browse(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"Error in handle_browse: {e}", exc_info=True)
         await update.message.reply_text("⚠️ An error occurred while fetching categories.")
+
+async def handle_broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handles the /broadcast command for admins."""
+    if not is_admin(update.effective_user.id):
+        return
+
+    message_to_broadcast = ' '.join(context.args)
+    if not message_to_broadcast:
+        await update.message.reply_text("❌ Please provide a message to broadcast. Usage: /broadcast <message>")
+        return
+
+    user_ids = await db.get_all_user_ids()
+    if not user_ids:
+        await update.message.reply_text("No users found in the database to broadcast to.")
+        return
+
+    msg = await update.message.reply_text(f"📢 Starting broadcast to {len(user_ids)} users...")
+
+    success_count = 0
+    fail_count = 0
+
+    for user_id in user_ids:
+        try:
+            await context.bot.send_message(chat_id=user_id, text=message_to_broadcast, parse_mode='HTML')
+            success_count += 1
+        except (BadRequest, Forbidden) as e:
+            # BadRequest can happen if chat not found, Forbidden if user blocked the bot
+            logger.warning(f"Failed to send broadcast to {user_id}: {e}")
+            fail_count += 1
+        except Exception as e:
+            logger.error(f"An unexpected error occurred when broadcasting to {user_id}: {e}", exc_info=True)
+            fail_count += 1
+        await asyncio.sleep(0.1) # Small delay to avoid hitting rate limits
+
+    summary_text = (
+        f"✅ Broadcast complete!\n\n"
+        f"Sent successfully: {success_count}\n"
+        f"Failed to send: {fail_count}"
+    )
+    await msg.edit_text(summary_text)
 
 
 # --- Error Handling ---
@@ -1030,7 +1155,8 @@ async def post_init_tasks(application: Application):
             BotCommand("refreshdb", "🔄 Refresh the movie database (Admin)"),
             BotCommand("url", "➕ Add a new movie URL (Admin)"),
             BotCommand("addwebseries", "➕ Add a new web series (Admin)"),
-            BotCommand("viewrequests", "📥 View movie requests (Admin)")
+            BotCommand("viewrequests", "📥 View movie requests (Admin)"),
+            BotCommand("broadcast", "📢 Send a message to all users (Admin)")
         ]
         # Set extended commands for each admin
         for admin_id in ADMIN_IDS:
@@ -1077,6 +1203,7 @@ def main() -> None:
         application.add_handler(CommandHandler('url', handle_add_url, filters=admin_filter))
         application.add_handler(CommandHandler('addwebseries', handle_add_webseries, filters=admin_filter))
         application.add_handler(CommandHandler('viewrequests', handle_view_requests, filters=admin_filter))
+        application.add_handler(CommandHandler('broadcast', handle_broadcast, filters=admin_filter))
 
     application.add_error_handler(error_handler)
 
