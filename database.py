@@ -38,6 +38,27 @@ async def initialize_db():
         logger.error(f"Failed to connect to Supabase: {e}", exc_info=True)
         raise e
 
+# --- User Functions ---
+async def add_user(user_id: int):
+    """Adds or updates a user in the database for broadcast purposes."""
+    client = get_supabase_client()
+    try:
+        client.table("users").upsert({"user_id": user_id}, on_conflict="user_id").execute()
+        logger.info(f"Upserted user_id: {user_id}")
+    except Exception as e:
+        logger.error(f"Error upserting user {user_id}: {e}", exc_info=True)
+
+
+async def get_all_user_ids() -> list[int]:
+    """Retrieves a list of all unique user IDs from the database."""
+    client = get_supabase_client()
+    try:
+        response = client.table("users").select("user_id").execute()
+        return [item['user_id'] for item in response.data]
+    except Exception as e:
+        logger.error(f"Error getting all user IDs: {e}", exc_info=True)
+        return []
+
 
 # --- Movie Functions ---
 async def clear_movies():
@@ -84,7 +105,8 @@ async def add_movie_batch(movie_items: list):
 
 async def search_movies_by_normalized_name(normalized_query: str, limit: int = 15):
     """
-    Searches for movies where the normalized_name contains all words from the query.
+    Searches for movies where the normalized_name contains all words from the query,
+    matching them as whole words for better accuracy.
     """
     client = get_supabase_client()
     query_words = normalized_query.split()
@@ -94,8 +116,17 @@ async def search_movies_by_normalized_name(normalized_query: str, limit: int = 1
 
     try:
         query = client.table("movies").select("name, normalized_name")
+
+        # For each word in the search query, build a filter that matches it as a whole word.
+        # This is more precise than a simple 'contains' check.
         for word in query_words:
-            query = query.ilike("normalized_name", f"%{word}%")
+            or_filter = (
+                f"normalized_name.eq.{word},"  # Exact match
+                f"normalized_name.ilike.{word} %,"  # Starts with word
+                f"normalized_name.ilike.% {word},"  # Ends with word
+                f"normalized_name.ilike.% {word} %"  # Contains word with spaces
+            )
+            query = query.or_(or_filter)
 
         response = query.limit(limit).execute()
         return [row["name"] for row in response.data]
@@ -355,6 +386,10 @@ async def get_episodes_for_series(series_id: int):
 
 
 async def search_webseries_by_normalized_name(normalized_query: str, limit: int = 15):
+    """
+    Searches for webseries where the normalized_name contains all words from the query,
+    matching them as whole words for better accuracy.
+    """
     client = get_supabase_client()
     query_words = normalized_query.split()
 
@@ -363,8 +398,16 @@ async def search_webseries_by_normalized_name(normalized_query: str, limit: int 
 
     try:
         query = client.table("webseries").select("name, normalized_name")
+        
+        # For each word in the search query, build a filter that matches it as a whole word.
         for word in query_words:
-            query = query.ilike("normalized_name", f"%{word}%")
+            or_filter = (
+                f"normalized_name.eq.{word},"  # Exact match
+                f"normalized_name.ilike.{word} %,"  # Starts with word
+                f"normalized_name.ilike.% {word},"  # Ends with word
+                f"normalized_name.ilike.% {word} %"  # Contains word with spaces
+            )
+            query = query.or_(or_filter)
 
         response = query.limit(limit).execute()
         return [row["name"] for row in response.data]
