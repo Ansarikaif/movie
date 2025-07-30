@@ -61,14 +61,14 @@ async def get_all_user_ids() -> list[int]:
 
 
 # --- Movie Functions ---
-async def clear_movies():
-    """Deletes all records from the movies table."""
+async def clear_scraped_movies():
+    """Deletes all records from the movies table that were added by scraping."""
     client = get_supabase_client()
     try:
-        response = client.table("movies").delete().neq("id", 0).execute()
-        logger.info(f"Cleared {len(response.data)} movies from Supabase.")
+        response = client.table("movies").delete().eq("source", "scraped").execute()
+        logger.info(f"Cleared {len(response.data)} scraped movies from Supabase.")
     except Exception as e:
-        logger.error(f"Error clearing movies from Supabase: {e}", exc_info=True)
+        logger.error(f"Error clearing scraped movies from Supabase: {e}", exc_info=True)
 
 
 async def add_movie_batch(movie_items: list):
